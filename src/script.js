@@ -1,12 +1,20 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { Sky } from 'three/addons/objects/Sky.js'
 
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
-const characterTexture = textureLoader.load('./Card/Card-Character-Image.jpg')
-const backgroundTexture = textureLoader.load('./Card/Card-Background-Image.jpg')
+// Character
+const characterTexture = textureLoader.load('./Card/Card-Character-Image-no-BG-PNG.png')
+characterTexture.colorSpace = THREE.SRGBColorSpace
+// Background
+const backgroundTexture = textureLoader.load('./Card/Card-Background-Image-Expanded.jpg')
+backgroundTexture.colorSpace = THREE.SRGBColorSpace
+// Border
+const borderTexture = textureLoader.load('./Card-Border-PNG.png')
+borderTexture.colorSpace = THREE.SRGBColorSpace
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -23,15 +31,37 @@ scene.add(ambientLight)
 /**
  * Card
  */
-// Card Base Plane
-const card = new THREE.Mesh(
-    new THREE.PlaneGeometry(1, 1.2),
+// Background Card
+const backgroundCard = new THREE.Mesh(
+    new THREE.PlaneGeometry(2, 2),
     new THREE.MeshBasicMaterial({
         map: backgroundTexture
     })
 )
+backgroundCard.position.z = - 1.5
+backgroundCard.scale.set(1.5, 1.5, 1.5)
 
-scene.add(card)
+// Border
+// const border = new THREE.Mesh(
+//     new THREE.PlaneGeometry(1.8, 1.5),
+//     new THREE.MeshBasicMaterial({
+//         transparent: true,
+//         map: borderTexture
+//     })
+// )
+
+// Character Card
+const characterCard = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.8, 1.5),
+    new THREE.MeshBasicMaterial({
+        transparent: true,
+        map: characterTexture
+    })
+)
+characterCard.position.y = - 0.2
+characterCard.position.z = + 0.75
+
+scene.add(characterCard, backgroundCard)
 
 /**
  * Sizes
@@ -66,6 +96,18 @@ camera.position.y = 0
 camera.position.z = 4
 scene.add(camera)
 
+/**
+ * Sky
+ */
+const sky = new Sky()
+sky.scale.set(100, 100, 100)
+scene.add(sky)
+
+sky.material.uniforms['turbidity'].value = 10
+sky.material.uniforms['rayleigh'].value = 3
+sky.material.uniforms['mieCoefficient'].value = 0.1
+sky.material.uniforms['mieDirectionalG'].value = 0.95
+sky.material.uniforms['sunPosition'].value.set(0.3, -0.038, -0.95)
 
 /**
  * Renderer
@@ -80,8 +122,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 document.addEventListener('mousemove', (event) => {
     const x = (event.clientX / window.innerWidth) * 2 - 1;
     const y = -(event.clientY / window.innerHeight) * 2 + 1;
-    card.rotation.y = x * 0.3;
-    card.rotation.x = y * 0.3;
+    characterCard.rotation.y = x * 0.5;
+    characterCard.rotation.x = y * 0.5;
+    backgroundCard.rotation.y = x * 0.5;
+    backgroundCard.rotation.x = y * 0.5;
+    border.rotation.y = x * 0.5;
+    border.rotation.x = y * 0.5;
   });
 
 /**
