@@ -1,19 +1,27 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { Sky } from 'three/addons/objects/Sky.js'
+import { texture } from 'three/tsl'
 
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
 // Character
-const characterTexture = textureLoader.load('./Card/Card-Character-Image-no-BG-PNG.png')
-characterTexture.colorSpace = THREE.SRGBColorSpace
+const playerTexture = textureLoader.load('./Card/Player.png')
+
+playerTexture.colorSpace = THREE.SRGBColorSpace
 // Background
-const backgroundTexture = textureLoader.load('./Card/Card-Background-Image-Expanded.jpg')
-backgroundTexture.colorSpace = THREE.SRGBColorSpace
+const baseBGTexture = textureLoader.load('./Card/DarkBlueBG.png')
+const lightBGTexture = textureLoader.load('./Card/LightBlueBG.png')
+const whiteParticle = textureLoader.load('./Card/WhiteBG.png')
+
+baseBGTexture.colorSpace = THREE.SRGBColorSpace
+lightBGTexture.colorSpace = THREE.SRGBColorSpace
+whiteParticle.colorSpace = THREE.SRGBColorSpace
 // Border
-const borderTexture = textureLoader.load('./Card-Border-PNG.png')
+const borderTexture = textureLoader.load('.Card/Border.png')
+
 borderTexture.colorSpace = THREE.SRGBColorSpace
 
 // Canvas
@@ -32,14 +40,37 @@ scene.add(ambientLight)
  * Card
  */
 // Background Card
-const backgroundCard = new THREE.Mesh(
+const baseBackground = new THREE.Mesh(
     new THREE.PlaneGeometry(2, 2),
     new THREE.MeshBasicMaterial({
-        map: backgroundTexture
+        map: baseBGTexture
     })
 )
-backgroundCard.position.z = - 1.5
-backgroundCard.scale.set(1.5, 1.5, 1.5)
+baseBackground.position.y = - 0.03
+baseBackground.position.z = - 1.5
+baseBackground.scale.set(1.5, 1.5, 1.5)
+
+const lightBackground = new THREE.Mesh(
+    new THREE.PlaneGeometry(2, 2),
+    new THREE.MeshBasicMaterial({
+        map: lightBGTexture,
+        transparent: true
+    })
+)
+lightBackground.position.y = - 0.03
+lightBackground.position.z = - 1.1
+lightBackground.scale.set(1.4, 1.4, 1.4)
+
+const whiteParticles = new THREE.Mesh(
+    new THREE.PlaneGeometry(2, 2),
+    new THREE.MeshBasicMaterial({
+        map: whiteParticle,
+        transparent: true
+    })
+)
+whiteParticles.position.y = - 0.03
+whiteParticles.position.z = - 0.7
+whiteParticles.scale.set(1.3, 1.3, 1.3)
 
 // Border
 // const border = new THREE.Mesh(
@@ -52,16 +83,17 @@ backgroundCard.scale.set(1.5, 1.5, 1.5)
 
 // Character Card
 const characterCard = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.8, 1.5),
+    new THREE.PlaneGeometry(1.2, 1.5),
     new THREE.MeshBasicMaterial({
         transparent: true,
-        map: characterTexture
+        map: playerTexture
     })
 )
-characterCard.position.y = - 0.2
-characterCard.position.z = + 0.75
+characterCard.position.y = + 0.2
+characterCard.position.z = + 1.5
+baseBackground.scale.set(1.5, 1.5, 1.5)
 
-scene.add(characterCard, backgroundCard)
+scene.add(characterCard, baseBackground, lightBackground, whiteParticles)
 
 /**
  * Sizes
@@ -93,7 +125,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 1000)
 camera.position.x = 0
 camera.position.y = 0
-camera.position.z = 4
+camera.position.z = 6
 scene.add(camera)
 
 /**
@@ -124,10 +156,14 @@ document.addEventListener('mousemove', (event) => {
     const y = -(event.clientY / window.innerHeight) * 2 + 1;
     characterCard.rotation.y = x * 0.5;
     characterCard.rotation.x = y * 0.5;
-    backgroundCard.rotation.y = x * 0.5;
-    backgroundCard.rotation.x = y * 0.5;
-    border.rotation.y = x * 0.5;
-    border.rotation.x = y * 0.5;
+    baseBackground.rotation.y = x * 0.5;
+    baseBackground.rotation.x = y * 0.5;
+    lightBackground.rotation.y = x * 0.5;
+    lightBackground.rotation.x = y * 0.5;
+    whiteParticles.rotation.y = x * 0.5;
+    whiteParticles.rotation.x = y * 0.5;
+    // borderTexture.rotation.y = x * 0.5;
+    // borderTexture.rotation.x = y * 0.5;
   });
 
 /**
