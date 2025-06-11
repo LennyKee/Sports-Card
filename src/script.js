@@ -37,65 +37,6 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1)
 scene.add(ambientLight)
 
 /**
- * Card
- */
-// Background Card
-const baseBackground = new THREE.Mesh(
-    new THREE.PlaneGeometry(2, 2),
-    new THREE.MeshBasicMaterial({
-        map: baseBGTexture
-    })
-)
-baseBackground.position.y = - 0.03
-baseBackground.position.z = - 1.5
-baseBackground.scale.set(1.5, 1.5, 1.5)
-
-const lightBackground = new THREE.Mesh(
-    new THREE.PlaneGeometry(2, 2),
-    new THREE.MeshBasicMaterial({
-        map: lightBGTexture,
-        transparent: true
-    })
-)
-lightBackground.position.y = - 0.03
-lightBackground.position.z = - 1.1
-lightBackground.scale.set(1.4, 1.4, 1.4)
-
-const whiteParticles = new THREE.Mesh(
-    new THREE.PlaneGeometry(2, 2),
-    new THREE.MeshBasicMaterial({
-        map: whiteParticle,
-        transparent: true
-    })
-)
-whiteParticles.position.y = - 0.03
-whiteParticles.position.z = - 0.7
-whiteParticles.scale.set(1.3, 1.3, 1.3)
-
-// Border
-// const border = new THREE.Mesh(
-//     new THREE.PlaneGeometry(1.8, 1.5),
-//     new THREE.MeshBasicMaterial({
-//         transparent: true,
-//         map: borderTexture
-//     })
-// )
-
-// Character Card
-const characterCard = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.2, 1.5),
-    new THREE.MeshBasicMaterial({
-        transparent: true,
-        map: playerTexture
-    })
-)
-characterCard.position.y = + 0.2
-characterCard.position.z = + 1.5
-baseBackground.scale.set(1.5, 1.5, 1.5)
-
-scene.add(characterCard, baseBackground, lightBackground, whiteParticles)
-
-/**
  * Sizes
  */
 const sizes = {
@@ -116,6 +57,11 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+    scalePlaneAtDistance(baseBackground, camera, -3)
+    scalePlaneAtDistance(lightBackground, camera, -2)
+    scalePlaneAtDistance(whiteParticles, camera, -0.7)
+    scalePlaneAtDistance(characterCard, camera, 20)
 })
 
 /**
@@ -127,6 +73,51 @@ camera.position.x = 0
 camera.position.y = 0
 camera.position.z = 6
 scene.add(camera)
+
+/**
+ * Card
+ */
+// Background Card
+const baseBackground = new THREE.Mesh(
+    new THREE.PlaneGeometry(7, 7),
+    new THREE.MeshBasicMaterial({
+        map: baseBGTexture,
+        transparent: true
+    })
+)
+baseBackground.position.set(0, -0.03, -5)
+
+const lightBackground = new THREE.Mesh(
+    new THREE.PlaneGeometry(3, 3),
+    new THREE.MeshBasicMaterial({
+        map: lightBGTexture,
+        transparent: true
+    })
+)
+lightBackground.position.set(0, -0.03, -1.1)
+
+// Border
+// const border = new THREE.Mesh(
+//     new THREE.PlaneGeometry(1.8, 1.5),
+//     new THREE.MeshBasicMaterial({
+//         transparent: true,
+//         map: borderTexture
+//     })
+// )
+
+// Character Card
+const characterCard = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1.5),
+    new THREE.MeshBasicMaterial({
+        transparent: true,
+        map: playerTexture
+    })
+)
+characterCard.position.y = + 0.2
+// characterCard.position.z = + 1.5
+// baseBackground.scale.set(1.5, 1.5, 1.5)
+
+scene.add(characterCard, baseBackground, lightBackground)
 
 /**
  * Sky
@@ -154,14 +145,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 document.addEventListener('mousemove', (event) => {
     const x = (event.clientX / window.innerWidth) * 2 - 1;
     const y = -(event.clientY / window.innerHeight) * 2 + 1;
-    characterCard.rotation.y = x * 0.5;
-    characterCard.rotation.x = y * 0.5;
-    baseBackground.rotation.y = x * 0.5;
-    baseBackground.rotation.x = y * 0.5;
-    lightBackground.rotation.y = x * 0.5;
-    lightBackground.rotation.x = y * 0.5;
-    whiteParticles.rotation.y = x * 0.5;
-    whiteParticles.rotation.x = y * 0.5;
+    characterCard.rotation.y = x * 0.8;
+    characterCard.rotation.x = y * 0.8;
+    baseBackground.rotation.y = x * 0.8;
+    baseBackground.rotation.x = y * 0.8;
+    lightBackground.rotation.y = x * 0.8;
+    lightBackground.rotation.x = y * 0.8;
     // borderTexture.rotation.y = x * 0.5;
     // borderTexture.rotation.x = y * 0.5;
   });
